@@ -1,0 +1,204 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.game.chess</groupId>
+  <artifactId>chessgame-api</artifactId>
+  <version>1.0</version>
+  <packaging>war</packaging>
+  
+  <properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<game-common.version>1.0</game-common.version>
+		<game-analysis.version>1.0</game-analysis.version>
+		<mybatis-ehcache.version>1.0.3</mybatis-ehcache.version>
+		<jedis.version>2.8.2</jedis.version>
+		<spring-data-redis.version>1.7.2.RELEASE</spring-data-redis.version>
+		<c3p0.version>0.9.5.2</c3p0.version>
+		<mysql.version>5.1.39</mysql.version>
+		<httpclient.version>4.5.2</httpclient.version>
+		<cglib.version>3.2.4</cglib.version>
+		<commons-beanutils.version>1.9.2</commons-beanutils.version>
+		<mybatis.generator.version>1.3.2</mybatis.generator.version>
+		<javax.servlet-api.version>3.1.0</javax.servlet-api.version>
+	</properties>
+
+	<dependencies>
+	
+		<!-- game-common -->
+		<dependency>
+			<groupId>com.game.common</groupId>
+			<artifactId>game-common</artifactId>
+			<version>${game-common.version}</version>
+		</dependency>
+		
+		<!-- game-common -->
+		<dependency>
+			<groupId>com.game.analysis</groupId>
+			<artifactId>game-analysis</artifactId>
+			<version>${game-analysis.version}</version>
+		</dependency>
+		
+		<!-- redis -->
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>${jedis.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-redis</artifactId>
+			<version>${spring-data-redis.version}</version>
+		</dependency>
+
+		<!-- 数据源 -->
+		<dependency>
+			<groupId>com.mchange</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>${c3p0.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql.version}</version>
+		</dependency>
+
+		<!-- http 客户端 -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>${httpclient.version}</version>
+		</dependency>
+		
+		<!-- netty -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.11.Final</version>
+        </dependency>
+
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib</artifactId>
+			<version>${cglib.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>${commons-beanutils.version}</version>
+		</dependency>
+		
+		<!-- complie and runtime -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${javax.servlet-api.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+            <groupId>org.apache.zookeeper</groupId>
+            <artifactId>zookeeper</artifactId>
+            <version>3.3.6</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>dubbo</artifactId>
+            <version>2.5.3</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>spring</artifactId>
+                    <groupId>org.springframework</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+	</dependencies>
+	
+	<profiles>
+	
+		<!-- 开发环境 -->
+		<profile>
+			<id>dev</id>
+			<properties>
+                <env>dev</env>
+			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation> 
+		</profile>
+		
+		<!-- 测试环境 -->
+		<profile>
+			<id>sit</id>
+			<properties>
+                <env>sit</env>
+			</properties>
+		</profile>
+		
+		<!-- 生产环境 -->
+		<profile>
+			<id>product</id>
+			<properties>
+                <env>product</env>
+			</properties>
+		</profile>
+	</profiles>
+
+	<build>
+		<finalName>chessgame-api</finalName>
+		<filters>  
+            <filter>src/base/resources/config-${env}.properties</filter>
+            <filter>src/base/resources/redis-${env}.properties</filter> 
+        </filters>  
+        <resources>  
+            <resource>  
+                <directory>src/main/resources</directory>  
+                <filtering>true</filtering>  
+            </resource>  
+        </resources>  
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<!-- mvn mybatis-generator:generate -->
+				<groupId>org.mybatis.generator</groupId>
+				<artifactId>mybatis-generator-maven-plugin</artifactId>
+				<version>${mybatis.generator.version}</version>
+				<dependencies>
+					<dependency>
+						<groupId>mysql</groupId>
+						<artifactId>mysql-connector-java</artifactId>
+						<version>${mysql.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.mybatis.generator</groupId>
+						<artifactId>mybatis-generator-core</artifactId>
+						<version>${mybatis.generator.version}</version>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<configurationFile>src/main/resources/mybatis/generator.xml</configurationFile>
+					<!--允许移动生成的文件 -->
+					<verbose>true</verbose>
+					<!--允许覆盖生成的文件 -->
+					<overwrite>true</overwrite>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+  
+</project>

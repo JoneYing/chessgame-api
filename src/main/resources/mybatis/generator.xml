@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+
+	<!-- 引入配置文件 -->
+	<properties resource="mybatis/generator.properties" />
+
+	<!-- 一个数据库一个context -->
+	<context id="simm" targetRuntime="MyBatis3">
+
+		<!-- 注释 -->
+		<commentGenerator>
+			<property name="suppressAllComments" value="true" />
+			<property name="suppressDate" value="true" />
+		</commentGenerator>
+
+		<!-- jdbc连接 -->
+		<jdbcConnection driverClass="${jdbc_driver}"
+			connectionURL="${jdbc_url}" userId="${jdbc_user}" password="${jdbc_password}" />
+
+		<!-- 类型转换 -->
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+
+		<!-- 生成实体类地址 -->
+		<javaModelGenerator targetPackage="com.simm.datamanager.bean.contact"
+			targetProject="src/main/java">
+			<property name="rootClass" value="com.simm.common.bean.BaseBean" />
+			<property name="enableSubPackages" value="false" />
+			<property name="trimStrings" value="false" />
+		</javaModelGenerator>
+
+		<!-- 生成mapxml文件 -->
+		<sqlMapGenerator targetPackage="mapping/contact"
+			targetProject="src/main/resources">
+			<property name="enableSubPackages" value="false" />
+		</sqlMapGenerator>
+
+		<!-- 生成mapxml对应client，也就是接口dao -->
+		<javaClientGenerator targetPackage="com.simm.datamanager.dao.contact"
+			type="XMLMAPPER" targetProject="src/main/java">
+			<property name="rootInterface" value="com.simm.datamanager.dao.BaseMapper" />
+			<property name="enableSubPackages" value="false" />
+		</javaClientGenerator>
+
+		<!-- 配置表信息 -->
+        <table tableName="smdm_contact_task_user" domainObjectName="SmdmContactTaskUser"
+        	enableCountByExample="true" enableSelectByExample="true"
+            enableUpdateByExample="true" enableDeleteByExample="true">
+            <property name="useActualColumnNames" value="false"/>
+			<generatedKey column="id" sqlStatement="MySql" identity="true" />
+        </table>
+	</context>
+</generatorConfiguration>
